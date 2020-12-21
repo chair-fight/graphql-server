@@ -1,17 +1,11 @@
 const { gql } = require('apollo-server');
 
 
-
-
-
-
-
 const typeDefs = gql`
     type Query{
-        
-       getUser(ID:ID!) : User
-        
-        
+        getUser(ID:ID!) : User
+        getAllUsers : [User]
+        getAllGroups : [Group]
     }
     
     type Mutation{
@@ -24,29 +18,30 @@ const typeDefs = gql`
         deleteGroup(GroupID : ID!) : Boolean
         removeUser(GroupID : ID!, UserID : ID!) : Boolean
         addUser(GroupID : ID!,UserID:ID!) : Boolean
-        
     }
     
     
     type User {
         ID : ID!
         Name : String!
-        Password: String!
+        Email: String
         Surname : String
         University : String
-        Groups : [Group]!
-        Posts: [Post]!
+        Gender: String
+        DateOfBirth : String
     }
     
     type Group{
         ID : ID!
         Name : String!
+        Description : String
         NumberOfMembers : Int!
         AdminUsers : [User!]!
         Users : [User]!
     }
     
     type Post{
+        ID : ID!
         Author : User!
         Text : String
         Image : String
@@ -58,10 +53,10 @@ const typeDefs = gql`
     }
     
     type GroupAssignment { 
+        ID : ID!
         Group : Group!
         Text : String
         Deadline : String
     }
-    
 `
 module.exports = typeDefs;
