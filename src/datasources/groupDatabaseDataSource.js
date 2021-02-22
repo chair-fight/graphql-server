@@ -36,22 +36,47 @@ class GroupDatabaseDataSource extends DataSource{
             .then(data=>data);
     }
 
-    createGroup(firebaseID,email){
-        return this.dataBase.insert({firebaseid : firebaseID , email},['*']).into("user").then(data => data[0])
+    createGroup(uid,name){
+        return this.dataBase.transaction(trx => {
+
+            return trx
+                .insert({uid ,name},['gid']).into("group")
+                .then(data => {
+                    const gid = data[0].gid;
+                    return trx.insert({gid,uid,'isadmin' : true}).into('user_group_member')
+                });
+            })
+            .then(function(inserts) {
+                return true;
+            })
+            .catch(function(error) {
+                // If we get here, that means that neither the 'Old Books' catalogues insert,
+                // nor any of the books inserts will have taken place.
+                console.error(error);
+                return false;
+            });
     }
 
-    updateGroup(firebaseID,newName,newSurname){
-        console.log("Updating user" + firebaseID + newName + newSurname);
-        if(newName === undefined || newSurname === undefined)
-            return this.getUser(firebaseID)
+    updateGroup(groupID,newName,newDescription){
 
-        return this.dataBase("user").where({firebaseid:firebaseID}).update({name : newName,surname:newSurname},["*"])
+        return this.dataBase("group").where({'gid':groupID}).update({name : newName,description:newDescription},["*"])
             .then(data => data[0])
     }
 
-    deleteGroup(firebaseID){
-        return this.dataBase("user").where({firebaseid : firebaseID}).del().then(data=>data)
+    async addUserToGroup(groupID,uid){
+        const gid = groupID;
+
+        const isAlreadyInGroup = await this.dataBase.count({amount : 'uid'}).from('user_group_member')
+            .where({"gid":groupID,'uid' : uid}).then(data => data[0].amount)
+
+        if(isAlreadyInGroup != 0) {
+            return false;
+        }
+
+        return this.dataBase.insert({gid,uid}).into('user_group_member')
+            .then(data => true)
     }
+
 
 
 }

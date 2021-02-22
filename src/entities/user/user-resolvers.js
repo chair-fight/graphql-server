@@ -3,8 +3,8 @@ const lod = require('lodash');
 
 module.exports = {
     Query : {
-        getUser: async (_, {firebaseID}, {dataSources}) => {
-            return dataSources.userDatabaseData.getUserWithFID(firebaseID);
+        getUser: async (_, {uid}, {dataSources}) => {
+            return dataSources.userDatabaseData.getUserWithUID(uid);
         },
         getAllUsers: async (_, __, {dataSources}) => {
             return dataSources.userDatabaseData.getAllUsers();
@@ -14,16 +14,28 @@ module.exports = {
         createUser : async (_,{firebaseID,email},{dataSources}) => {
             return dataSources.userDatabaseData.createUser(firebaseID,email);
         },
-        updateUser : async (_,{firebaseID,newName,newSurname},{dataSources}) => {
-            return dataSources.userDatabaseData.updateUser(firebaseID,newName,newSurname);
+        updateUser : async (_,{uid,newName,newSurname},{dataSources}) => {
+            return dataSources.userDatabaseData.updateUser(uid,newName,newSurname);
         },
-        deleteUser : async (_,{firebaseID},{dataSources}) => {
-            return !!dataSources.userDatabaseData.deleteUser(firebaseID);
+        deleteUser : async (_,{uid},{dataSources}) => {
+            return !!dataSources.userDatabaseData.deleteUser(uid);
         }
     },
     User : {
         groups : async (user,__,{dataSources}) => {
             return dataSources.userDatabaseData.getUserGroups(user.uid);
+        },
+        labels: async (user,__,{dataSources}) => {
+            return dataSources.userDatabaseData.getLabelsOfUser(user.uid);
+        },
+        assignmentsGroup : async (user,__,{dataSources}) => {
+            return dataSources.assignmentsDatabaseData.getAssignmentsGroupForUser(user.uid);
+        },
+        assignmentPrivate : async (user,__,{dataSources}) => {
+            return dataSources.assignmentsDatabaseData.getAssignmentsPrivateForUser(user.uid);
+        },
+        schedulePrivate : async (user,__,{dataSources}) => {
+            return dataSources.scheduleDatabaseData.getSchedulePrivateOfUser(user.uid);
         },
     }
 }

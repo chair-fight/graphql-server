@@ -8,17 +8,16 @@ const groupTypeDefs = gql`
     }
 
     extend type Mutation{
-        createGroup(AdminUserID : ID!,GroupName : String): Group
-        updateGroup(GroupID : ID!,NewName : String) : Boolean
-        deleteGroup(GroupID : ID!) : Boolean
-        removeUser(GroupID : ID!, UserID : ID!) : Boolean
-        addUser(GroupID : ID!,UserID:ID!) : Boolean
+        createGroup(adminUID : ID!,groupName : String): Boolean
+        updateGroup(groupID : ID!,newName : String,newDescription : String) : Group!
+        addUser(groupID : ID!,uid:ID!) : Boolean
     }
 
     type Group{
         gid : ID!
         name : String!
         description : String
+        groupAssignments : [AssignmentGroupForGroup]!
         numberOfMembers : Int!
         adminUsers : [User!]!
         users : [User]!

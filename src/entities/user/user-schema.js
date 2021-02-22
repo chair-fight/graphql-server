@@ -4,14 +4,14 @@ const { gql } = require('apollo-server');
 
 const userTypeDefs = gql`
     extend type Query {
-        getUser( firebaseid:ID!) : User
+        getUser( uid:ID!) : User
         getAllUsers : [User]
     }
 
     extend type Mutation{
-        createUser(firebaseid:ID!,email: String!) : User
-        updateUser(firebaseid:ID!,newName : String, newSurname : String) : User
-        deleteUser(firebaseid:ID!) : Boolean
+        createUser(firebaseID:String!,email: String!) : Boolean
+        updateUser(uid:ID!,newName : String, newSurname : String) : User
+        deleteUser(uid:ID!) : Boolean
     }
     
     type User {
@@ -21,6 +21,10 @@ const userTypeDefs = gql`
         email: String!
         surname : String
         dateofcreation : String!
+        assignmentsGroup : [AssignmentGroupForUser]!
+        assignmentPrivate : [AssignmentPrivate]!
+        schedulePrivate : [SchedulePrivate]!
+        labels : [Label]!
         groups : [Group]
     }
 `
