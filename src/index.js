@@ -42,11 +42,11 @@ types.setTypeParser(DATE_OID, parseDate);
 const db = knex({
     client: 'pg',
     connection: {
-        host : '127.0.0.1',
+        host : process.env.HOST || '127.0.0.1',
         port : 5432,
-        user : 'postgres',
-        password : 'psql2021',
-        database : 'studbox'
+        user : process.env.USER || 'postgres',
+        password : process.env.PASSWORD || 'psql2021',
+        database : process.env.DATABASE || 'studbox'
     }
 });
 
@@ -122,8 +122,6 @@ if (process.env.NODE_ENV !== 'test') {
     server.listen({ port: process.env.PORT || 4000 }).then(() => {
         console.log(`
       Server is running!
-      Listening on port 4000
-      Query at https://studio.apollographql.com/dev
     `);
     });
 }
