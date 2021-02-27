@@ -23,14 +23,14 @@ class GroupDatabaseDataSource extends DataSource{
     }
 
     getGroupUsers(groupID){
-        return this.dataBase.select("user.*").from("user").innerJoin("user_group_member","user.uid","user_group_member.uid")
+        return this.dataBase.select("user.*","user.dateofcreation as dateOfCreation").from("user").innerJoin("user_group_member","user.uid","user_group_member.uid")
             .innerJoin('group','user_group_member.gid','group.gid')
             .where({'group.gid':groupID,'user_group_member.isadmin':false})
             .then(data=>data);
     }
 
     getGroupAdmins(groupID){
-        return this.dataBase.select("user.*").from("user").innerJoin("user_group_member","user.uid","user_group_member.uid")
+        return this.dataBase.select("user.*","user.dateofcreation as dateOfCreation").from("user").innerJoin("user_group_member","user.uid","user_group_member.uid")
             .innerJoin('group','user_group_member.gid','group.gid')
             .where({'group.gid':groupID,'user_group_member.isadmin':true})
             .then(data=>data);
@@ -77,6 +77,16 @@ class GroupDatabaseDataSource extends DataSource{
             .then(data => true)
     }
 
+    getLabelsOfGroup(gid){
+        return this.dataBase.select('label_group.name','label_group.color','label_group.lgid').from('label_group')
+            .innerJoin('group','group.gid','label_group.gid')
+            .where({"group.uid":gid}).then(data => data);
+    }
+
+    addLabelForGroup(name,color,gid){
+        return this.dataBase.insert({name,color,gid},['lgid']).into('label_group').then(data=>data);
+
+    }
 
 
 }

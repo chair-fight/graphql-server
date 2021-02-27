@@ -6,7 +6,8 @@ module.exports = {
         getUser: async (_, {uid}, {dataSources}) => {
             return dataSources.userDatabaseData.getUserWithUID(uid);
         },
-        getAllUsers: async (_, __, {dataSources}) => {
+        getAllUsers: async (_, __, {dataSources,scope}) => {
+            console.log(scope)
             return dataSources.userDatabaseData.getAllUsers();
         },
     },
@@ -31,11 +32,14 @@ module.exports = {
         assignmentsGroup : async (user,__,{dataSources}) => {
             return dataSources.assignmentsDatabaseData.getAssignmentsGroupForUser(user.uid);
         },
-        assignmentPrivate : async (user,__,{dataSources}) => {
+        assignmentsPrivate : async (user,__,{dataSources}) => {
             return dataSources.assignmentsDatabaseData.getAssignmentsPrivateForUser(user.uid);
         },
         schedulePrivate : async (user,__,{dataSources}) => {
             return dataSources.scheduleDatabaseData.getSchedulePrivateOfUser(user.uid);
+        },
+        scheduleGroup : async (user,__,{dataSources}) => {
+            return dataSources.scheduleDatabaseData.getScheduleGroupOfUser(user.uid);
         },
     }
 }

@@ -36,8 +36,14 @@ module.exports = {
         users: async (group,__,{dataSources}) => {
             return dataSources.groupDatabaseData.getGroupUsers(group.gid);
         },
-        groupAssignments: async (group,__,{dataSources}) => {
+        assignmentsGroup: async (group,__,{dataSources}) => {
             return dataSources.assignmentsDatabaseData.getAssignmentsGroupForGroup(group.gid);
-        }
+        },
+        scheduleGroup : async (group,__,{dataSources}) => {
+            return dataSources.scheduleDatabaseData.getScheduleGroupOfGroup(group.gid);
+        },
+        labels : async (group,__,{dataSources}) => {
+            return dataSources.groupDatabaseData.getLabelsOfGroup(group.gid);
+        },
     }
 }

@@ -17,7 +17,9 @@ const groupTypeDefs = gql`
         gid : ID!
         name : String!
         description : String
-        groupAssignments : [AssignmentGroupForGroup]!
+        assignmentsGroup : [AssignmentGroupForGroup]!
+        labels : [Label]!
+        scheduleGroup : [ScheduleGroup]!
         numberOfMembers : Int!
         adminUsers : [User!]!
         users : [User]!

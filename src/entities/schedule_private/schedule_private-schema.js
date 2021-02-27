@@ -14,6 +14,7 @@ const schedulePrivateTypeDefs = gql`
         spid : ID!
         name : String!
         uid : ID!
+        scheduleEntries : [ScheduleEntryPrivate]!
     }
 `
 module.exports = schedulePrivateTypeDefs

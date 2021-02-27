@@ -20,10 +20,11 @@ const userTypeDefs = gql`
         name : String
         email: String!
         surname : String
-        dateofcreation : String!
+        dateOfCreation : String!
         assignmentsGroup : [AssignmentGroupForUser]!
-        assignmentPrivate : [AssignmentPrivate]!
+        assignmentsPrivate : [AssignmentPrivate]!
         schedulePrivate : [SchedulePrivate]!
+        scheduleGroup : [ScheduleGroup]!
         labels : [Label]!
         groups : [Group]
     }

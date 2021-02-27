@@ -7,11 +7,11 @@ class UserDatabaseDataSource extends DataSource{
     }
 
     getUserWithFID(firebaseID){
-        return this.dataBase.select('*').from("user").where("firebaseid",firebaseID).then(data => data[0])
+        return this.dataBase.select('*','dateofcreation as dateOfCreation').from("user").where("firebaseid",firebaseID).then(data => data[0])
     }
 
     getUserWithUID(uid){
-        return this.dataBase.select('*').from("user").where({uid}).then(data => data[0])
+        return this.dataBase.select('*','dateofcreation as dateOfCreation').from("user").where({uid}).then(data => data[0])
     }
 
     getUserGroups(uid){
@@ -40,17 +40,17 @@ class UserDatabaseDataSource extends DataSource{
     }
 
     getAllUsers(){
-        return this.dataBase.select('*').from("user").then(data => data);
+        return this.dataBase.select('*','dateofcreation as dateOfCreation').from("user").then(data => data);
     }
 
     getLabelsOfUser(uid){
-        return this.dataBase.select('label.name','label.color').from('label')
-            .innerJoin('user','user.uid','label.uid')
+        return this.dataBase.select('label_private.name','label_private.color','label_private.lpid as lid').from('label_private')
+            .innerJoin('user','user.uid','label_private.uid')
             .where({"user.uid":uid}).then(data => data);
     }
 
     addLabelForUser(name,color,uid){
-        return this.dataBase.insert({name,color,uid},['lid']).into('label').then(data=>data);
+        return this.dataBase.insert({name,color,uid},['lpid']).into('label_private').then(data=>data);
     }
 }
 

@@ -12,6 +12,9 @@ const labelTypeDefs = require('./entities/label/label-schema');
 const assignmentGroupTypeDefs = require('./entities/assignment_group/assignment_group-schema');
 const assignmentPrivateTypeDefs = require('./entities/assignment_private/assignment_private-schema');
 const schedulePrivateTypeDefs = require('./entities/schedule_private/schedule_private-schema');
+const scheduleEntryPrivateTypeDefs = require('./entities/schedule_entry_private/schedule_entry_private-schema');
+const scheduleGroupTypeDefs = require('./entities/schedule_group/schedule_group-schema');
+const scheduleEntryGroupTypeDefs = require('./entities/schedule_entry_group/schedule_entry_group-schema');
 
 const dateResolvers = require('./scalars/date/date-resolver');
 const userResolvers = require('./entities/user/user-resolvers');
@@ -20,6 +23,9 @@ const labelResolvers = require('./entities/label/label-resolvers');
 const assignmentGroupResolvers = require('./entities/assignment_group/assignment_group-resolvers')
 const assignmentPrivateResolvers = require('./entities/assignment_private/assignment_private-resolvers')
 const schedulePrivateResolvers = require('./entities/schedule_private/schedule_private-resolvers');
+const scheduleEntryPrivateResolvers = require('./entities/schedule_entry_private/schedule_entry_private-resolvers');
+const scheduleGroupResolvers = require('./entities/schedule_group/schedule_group-resolvers');
+const scheduleEntryGroupsResolvers = require('./entities/schedule_entry_group/schedule_entry_group-resolvers');
 
 const UserDatabaseDataSource = require("./datasources/userDatabaseDataSource.js");
 const GroupDatabaseDataSource = require("./datasources/groupDatabaseDataSource");
@@ -56,12 +62,18 @@ const dataSources = () => ({
 
 const context = async ({ req }) => {
     // simple auth check on every request
+    let returning = {}
     const auth = (req.headers && req.headers.authorization) || '';
     const email = Buffer.from(auth, 'base64').toString('ascii');
-
     // if the email isn't formatted validly, return null for user
-    if (!isEmail.validate(email)) return { user: null }
+    if (!isEmail.validate(email)) { returning = _.merge(returning,{ user: null });}
 
+    const scope = (req.headers && req.headers.scope) || '';
+    if(scope)
+    {
+        returning = _.merge(returning,{ scope });
+    }
+    return returning;
 };
 
 const baseTypeDefs = gql`
@@ -78,6 +90,9 @@ const server = new ApolloServer({
         ,assignmentGroupTypeDefs
         ,assignmentPrivateTypeDefs
         ,schedulePrivateTypeDefs
+        ,scheduleEntryPrivateTypeDefs
+        ,scheduleGroupTypeDefs
+        ,scheduleEntryGroupTypeDefs
     ],
     resolvers : _.merge({}
         ,dateResolvers
@@ -86,6 +101,9 @@ const server = new ApolloServer({
         ,assignmentGroupResolvers
         ,assignmentPrivateResolvers
         ,schedulePrivateResolvers
+        ,scheduleEntryPrivateResolvers
+        ,scheduleGroupResolvers
+        ,scheduleEntryGroupsResolvers
     ),
     dataSources,
     context,
@@ -101,7 +119,7 @@ const server = new ApolloServer({
 
 
 if (process.env.NODE_ENV !== 'test') {
-    server.listen().then(() => {
+    server.listen({ port: process.env.PORT || 4000 }).then(() => {
         console.log(`
       Server is running!
       Listening on port 4000
