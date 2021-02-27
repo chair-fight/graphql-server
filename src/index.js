@@ -39,18 +39,27 @@ const parseDate = (value) => value;
 
 types.setTypeParser(DATE_OID, parseDate);
 
-const db = knex({
-    client: 'pg',
-    connection: {
-        host : process.env.HOST || '127.0.0.1',
-        port : 5432,
-        user : process.env.USER || 'postgres',
-        password : process.env.PASSWORD || 'psql2021',
-        database : process.env.DATABASE || 'studbox'
-    }
-});
+const db = process.env.NODE_ENV === 'development' ?
+    knex({
+        client: 'pg',
+        connection: {
+            host : '127.0.0.1',
+            port : 5432,
+            user : 'postgres',
+            password : 'psql2021',
+            database : 'studbox'
+        }
+    }):
+    knex({
+        client: 'pg',
+        connection: {
+            host : process.env.DATABASE_URL,
+            ssl: true
+        }
+    });
 
-db.select('*').from('user').then(data => console.log(data[0].dateofcreation))
+
+
 
 
 const dataSources = () => ({
@@ -114,9 +123,6 @@ const server = new ApolloServer({
         ...internalEngineDemo
     },
 });
-
-
-
 
 if (process.env.NODE_ENV !== 'test') {
     server.listen({ port: process.env.PORT || 4000 }).then(() => {
