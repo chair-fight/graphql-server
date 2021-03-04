@@ -5,6 +5,7 @@ const { gql } = require('apollo-server');
 const userTypeDefs = gql`
     extend type Query {
         getUser( uid:ID!) : User
+        getUserWithFID(fid : String!) : User
         getAllUsers : [User]
     }
 

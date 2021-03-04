@@ -6,6 +6,9 @@ module.exports = {
         getUser: async (_, {uid}, {dataSources}) => {
             return dataSources.userDatabaseData.getUserWithUID(uid);
         },
+        getUserWithFID: async (_, {fid}, {dataSources}) => {
+            return dataSources.userDatabaseData.getUserWithFID(fid);
+        },
         getAllUsers: async (_, __, {dataSources,scope}) => {
             console.log(scope)
             return dataSources.userDatabaseData.getAllUsers();
